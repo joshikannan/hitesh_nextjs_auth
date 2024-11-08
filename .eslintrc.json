@@ -1,3 +1,10 @@
+// {
+//   "extends": ["next/core-web-vitals", "next/typescript"]
+// }
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  // to use any in errors // i just made it as warn, we can also off it by off, instead of warn
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off"
+  }
 }
