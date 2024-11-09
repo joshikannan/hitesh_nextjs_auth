@@ -29,7 +29,8 @@ const SignupPage = () => {
 
   const onSignup = async () => {
     setLoading(true);
-    console.log(user);
+
+    const res = await axios.post("api/users/signup", user);
     // try {
     //   const signupResponse = await axios.post("api/users/signup", user);
     //   if (signupResponse.data.status == 201) {
