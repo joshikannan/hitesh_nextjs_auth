@@ -6,64 +6,57 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
-const SignupPage = () => {
+const LoginPage = () => {
   const router = useRouter();
-  const [disableSignupBtn, setDisableSignupBtn] = useState(true);
+  const [disableLoginBtn, setDisableLoginBtn] = useState(true);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
-    username: "",
     email: "",
     password: "",
   });
-
   useEffect(() => {
-    if (
-      user.username.length > 0 &&
-      user.email.length > 0 &&
-      user.password.length > 0
-    ) {
-      setDisableSignupBtn(false);
+    // Email validation regex
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(user.email);
+    if (isValidEmail && user.password.length >= 3) {
+      setDisableLoginBtn(false);
     } else {
-      setDisableSignupBtn(true);
+      setDisableLoginBtn(true);
     }
   }, [user]);
 
-  const onSignup = async () => {
+  const onLogin = async () => {
     setLoading(true);
     try {
-      const signupResponse = await axios.post("api/users/signup", user);
-      if (signupResponse.data.status == 201) {
-        toast.success(signupResponse.data.message, {
+      const loginResponse = await axios.post("api/users/login", user);
+      console.log("loginResponsen", loginResponse.data);
+      const userId = loginResponse.data.id;
+      console.log("userId", userId);
+      if (!loginResponse.data.userVerified) {
+        toast.error("User Not verified", {
           duration: 4000,
           position: "top-right",
         });
-        router.push("/login");
-        // router.push("/verifyemail");
+        router.push(`/verifyemail`);
       } else {
-        toast.error(signupResponse.data.message, {
-          duration: 4000,
-          position: "top-right",
-          style: {},
-        });
-      }
-      if (signupResponse.data.emailstatus) {
-        toast.success(signupResponse.data.email, {
-          duration: 6000,
-          position: "top-right",
-          style: {},
-        });
-      } else {
-        toast.error(signupResponse.data.email, {
-          duration: 6000,
-          position: "top-right",
-          style: {},
-        });
-      }
+        if (loginResponse.data.status == 200) {
+          toast.success(loginResponse.data.message, {
+            duration: 4000,
+            position: "top-right",
+          });
 
-      console.log("signupResponse", signupResponse.data);
+          // router.push(`/profile/${userId}`);
+          router.push(`/verifyemail`);
+        } else {
+          toast.error(loginResponse.data.message, {
+            duration: 4000,
+            position: "top-right",
+            style: {},
+          });
+        }
+      }
     } catch (error) {
       toast.error(error.message);
-      console.log("Signup error", error.message);
+      console.log("Login error", error.message);
     } finally {
       setLoading(false);
     }
@@ -91,15 +84,7 @@ const SignupPage = () => {
             width: "300px",
           }}
         >
-          <h1>{loading ? "Loading ... ..." : "Signup"}</h1>
-          <TextField
-            fullWidth
-            size="small"
-            label="User Name"
-            onChange={(e) => {
-              setUser({ ...user, username: e.target.value });
-            }}
-          />
+          <h1>{loading ? "Loading ... ..." : "Login"}</h1>
           <TextField
             fullWidth
             size="small"
@@ -117,17 +102,17 @@ const SignupPage = () => {
             }}
           />
           <Button
-            disabled={disableSignupBtn}
+            disabled={disableLoginBtn}
             variant="contained"
-            onClick={onSignup}
+            onClick={onLogin}
           >
-            Signup
+            Login
           </Button>
-          <Link href={"/login"}> Already have an account ? Login...</Link>
+          <Link href={"/signup"}> Create New Account ? Signup...</Link>
         </Card>
       </Stack>
     </Fragment>
   );
 };
 
-export default SignupPage;
+export default LoginPage;
