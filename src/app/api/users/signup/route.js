@@ -25,7 +25,7 @@ import bcryptjs from "bcryptjs";
 connectdb();
 
 export async function POST(NextRequest) {
-  return hello;
+  return NextResponse.json({ data: "hello" });
   console.log("called");
   try {
     // getting red body from the client
