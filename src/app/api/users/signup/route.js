@@ -24,12 +24,10 @@ import bcryptjs from "bcryptjs";
 // This function call ensures that the database is connected, allowing queries to be run on the User collection.
 connectdb();
 
-export async function POST(NextRequest) {
-  return NextResponse.json({ data: "hello" });
-  console.log("called");
+export async function POST(request) {
   try {
     // getting red body from the client
-    const reqBody = await NextRequest.json();
+    const reqBody = await request.json();
     console.log("signup reqBody", reqBody);
 
     const { username, email, password } = reqBody;
@@ -60,22 +58,8 @@ export async function POST(NextRequest) {
     // savedUser holds values of newuser in db
     console.log("savedUser", savedUser);
 
-    // now a unverified user i created in db, lets erify it by email
-    // send verification email
-
-    // const sendEmailRes = await sendEmail({
-    //   email,
-    //   emailType: "VERIFY",
-    //   userId: savedUser._id,
-    // });
-    // console.log("sendEmailRes", sendEmailRes);
-
     return NextResponse.json({
       message: "User Created Successfully",
-      // emailstatus: sendEmailRes.success,
-      // email: sendEmailRes.success
-      //   ? "Verification token sent to email"
-      //   : "Error on sent token to email",
       success: true,
       savedUser,
       status: 201,
