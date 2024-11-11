@@ -19,44 +19,33 @@ import { connectdb } from "@/dbConfig/dbConfig";
 import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
-// import { sendEmail } from "@/app/helpers/mailer";
-
-// This function call ensures that the database is connected, allowing queries to be run on the User collection.
-connectdb();
 
 export async function POST(request) {
+  await connectdb(); // Ensure a fresh connection for each request
+
   try {
-    // getting red body from the client
     const reqBody = await request.json();
     console.log("signup reqBody", reqBody);
 
     const { username, email, password } = reqBody;
 
-    // check if user already exist
+    // Check if user already exists
     const user = await User.findOne({ email });
-
     if (user) {
-      return NextResponse.json({ message: "User Already Exist", status: 400 });
+      return NextResponse.json({ message: "User Already Exists", status: 400 });
     }
 
-    // if user is new, then hashpassword
+    // Hash the password
     const salt = await bcryptjs.genSalt(10);
-    console.log("salt", salt);
-
     const hashpassword = await bcryptjs.hash(password, salt);
-    console.log("hashpassword", hashpassword);
 
-    // now create new user in the daatbase
-
+    // Create and save the new user
     const newUser = new User({
       username,
       email,
-      password: hashpassword, // updated hashed password
+      password: hashpassword,
     });
-
-    const savedUser = await newUser.save(); // here newUser saved in the db
-    // savedUser holds values of newuser in db
-    console.log("savedUser", savedUser);
+    const savedUser = await newUser.save();
 
     return NextResponse.json({
       message: "User Created Successfully",
@@ -65,6 +54,7 @@ export async function POST(request) {
       status: 201,
     });
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Signup error", error); // Log error to Vercel logs
+    return NextResponse.json({ error: error.message, status: 500 });
   }
 }
