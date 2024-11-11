@@ -15,8 +15,8 @@
 // This approach encourages users to verify their email before gaining full access to the platform.
 // This approach ensures that the user confirms ownership of their email before they can fully use their account, helping maintain a secure and trustworthy application.
 
-import { connectdb } from "@/app/dbConfig/dbConfig";
-import User from "@/app/models/userModel";
+import { connectdb } from "@/dbConfig/dbConfig";
+import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
 // import { sendEmail } from "@/app/helpers/mailer";
