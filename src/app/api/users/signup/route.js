@@ -25,6 +25,7 @@ import bcryptjs from "bcryptjs";
 connectdb();
 
 export async function POST(NextRequest) {
+  return hello;
   console.log("called");
   try {
     // getting red body from the client
@@ -35,6 +36,7 @@ export async function POST(NextRequest) {
 
     // check if user already exist
     const user = await User.findOne({ email });
+
     if (user) {
       return NextResponse.json({ message: "User Already Exist", status: 400 });
     }
