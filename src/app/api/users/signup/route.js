@@ -19,7 +19,7 @@ import { connectdb } from "@/app/dbConfig/dbConfig";
 import User from "@/app/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
-import { sendEmail } from "@/app/helpers/mailer";
+// import { sendEmail } from "@/app/helpers/mailer";
 
 // This function call ensures that the database is connected, allowing queries to be run on the User collection.
 connectdb();
@@ -61,19 +61,19 @@ export async function POST(NextRequest) {
     // now a unverified user i created in db, lets erify it by email
     // send verification email
 
-    const sendEmailRes = await sendEmail({
-      email,
-      emailType: "VERIFY",
-      userId: savedUser._id,
-    });
-    console.log("sendEmailRes", sendEmailRes);
+    // const sendEmailRes = await sendEmail({
+    //   email,
+    //   emailType: "VERIFY",
+    //   userId: savedUser._id,
+    // });
+    // console.log("sendEmailRes", sendEmailRes);
 
     return NextResponse.json({
       message: "User Created Successfully",
-      emailstatus: sendEmailRes.success,
-      email: sendEmailRes.success
-        ? "Verification token sent to email"
-        : "Error on sent token to email",
+      // emailstatus: sendEmailRes.success,
+      // email: sendEmailRes.success
+      //   ? "Verification token sent to email"
+      //   : "Error on sent token to email",
       success: true,
       savedUser,
       status: 201,
